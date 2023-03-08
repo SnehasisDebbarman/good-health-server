@@ -21,6 +21,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongodb": "4.4.0",
     "mongoose": "^6.10.0",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.9.1",
     "uuid": "^9.0.0"
   }
 }

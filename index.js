@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 
 const checkoutStatusRouter = require("./Router/checkoutStatusRouter");
+const { sendMailer } = require("./sendMailer");
 
 const app = express();
 dotenv.config();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 dbConnection();
+sendMailer();
 
 app.use("/abandonedCart", checkoutStatusRouter);
 
