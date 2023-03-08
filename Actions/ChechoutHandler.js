@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const AbandonedCart = require("../Model/AbandonedCartModel");
 
+const { v1: uuidv1, v4: uuidv4 } = require("uuid");
+
 async function addAbandonedCart(req, res) {
   const newAbandonedCart = new AbandonedCart({
     username: req.body.username,
@@ -30,8 +32,25 @@ async function getAbandonedCart(req, res) {
     }
   });
 }
+async function updateAbandonedCartStatus(req, res) {
+  const id = req.params.id;
+  const update = req.body;
+  try {
+    const abandonedCart = await AbandonedCart.findByIdAndUpdate(id, update, {
+      new: true,
+    });
+    if (!abandonedCart) {
+      return res.status(404).send("Abandoned cart not found");
+    }
+    res.send(abandonedCart);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
 
 module.exports = {
   addAbandonedCart,
   getAbandonedCart,
+  updateAbandonedCartStatus,
 };
