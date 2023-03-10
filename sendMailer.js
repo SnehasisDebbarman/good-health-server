@@ -82,7 +82,7 @@ async function sendMailer() {
       username: cart.username,
       email: cart.email,
       phone: cart.phone,
-      abandonedStatus: cart.status,
+      abandonedStatus: cart.abandonedStatus,
       sendMessage: emailTemplate.subject,
       url: cart.url,
     });
