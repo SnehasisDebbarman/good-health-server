@@ -23,12 +23,12 @@ async function sendMailer() {
         "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
     },
     {
-      subject: "Your cart is still waiting! you left it 30 minutes ago",
+      subject: "Your cart is still waiting! you left it 2 minutes ago",
       message:
         "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
     },
     {
-      subject: "Don't forget about your cart! you left it 1 day ago",
+      subject: "Don't forget about your cart! you left it 2 minutes ago",
       message:
         "Hi {username},\n\nYour cart is still waiting for you! Take a look at the items you left behind and complete your purchase.",
     },
@@ -49,10 +49,25 @@ async function sendMailer() {
       const cartCreated = cart.createdAt;
       const timeDiff = now.getTime() - cartCreated.getTime();
 
-      if (timeDiff < 2 * 60 * 1000) {
-        await sendEmail(1, cart);
-        cart.abandonedStatus = false;
-        await cart.save();
+      // const sentMessage = await sendMessage.find({ username: cart.username });
+      try {
+        console.log(cart);
+        if (cart.count === 0 && timeDiff < 1 * 60 * 1000) {
+          cart.count += 1;
+          await cart.save();
+          await sendEmail(0, cart);
+        } else if (cart.count === 1 && timeDiff < 2 * 60 * 1000) {
+          cart.count += 1;
+          await cart.save();
+          await sendEmail(2, cart);
+        } else if (cart.count === 2 && timeDiff < 3 * 60 * 1000) {
+          cart.abandonedStatus = false;
+          cart.count += 1;
+          await cart.save();
+          await sendEmail(3, cart);
+        }
+      } catch (error) {
+        console.log(error);
       }
 
       // Send email based on time difference

@@ -11,6 +11,7 @@ async function addAbandonedCart(req, res) {
     abandonedStatus: true,
     url: req.body.url,
     others: req.body.others,
+    count: 0,
   });
 
   // Save the post to the database
