@@ -26,6 +26,10 @@ const sentMessageModal = mongoose.Schema(
       type: String,
       required: true,
     },
+    orderId: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

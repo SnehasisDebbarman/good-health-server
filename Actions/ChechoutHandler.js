@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const AbandonedCart = require("../Model/AbandonedCartModel");
 
-const { v1: uuidv1, v4: uuidv4 } = require("uuid");
+const { randomUUID } = require("crypto");
 
 async function addAbandonedCart(req, res) {
+  const orderId = randomUUID();
   const newAbandonedCart = new AbandonedCart({
     username: req.body.username,
     email: req.body.email,
@@ -12,6 +13,7 @@ async function addAbandonedCart(req, res) {
     url: req.body.url,
     others: req.body.others,
     count: 0,
+    orderId: orderId,
   });
 
   // Save the post to the database

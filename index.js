@@ -43,6 +43,6 @@ app.use("/sentMessages", sentMessagesRouter);
 // });
 
 // Start server
-app.listen(3001, () => {
-  console.log("Webhook listener started on port 3001");
+app.listen(3002, () => {
+  console.log("Webhook listener started on port 3002");
 });
