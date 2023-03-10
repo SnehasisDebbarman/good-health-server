@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 
 const checkoutStatusRouter = require("./Router/checkoutStatusRouter");
+const sentMessagesRouter = require("./Router/sendMessagesRouter");
 const { sendMailer } = require("./sendMailer");
 
 const app = express();
@@ -25,6 +26,7 @@ dbConnection();
 sendMailer();
 
 app.use("/abandonedCart", checkoutStatusRouter);
+app.use("/sentMessages", sentMessagesRouter);
 
 // app.post("/webhook", (req, res) => {
 //   const customerData = req.body.customerData;
