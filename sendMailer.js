@@ -10,12 +10,17 @@ async function sendMailer() {
     port: 587,
     auth: {
       user: "goodhealth.nodemailer@gmail.com",
-      pass: "Jimmy@2016",
+      pass: "irzvgrfwbaxqwpsd",
     },
   });
 
   // Define email templates for each day
   const emailTemplates = [
+    {
+      subject: "Your cart is still waiting!",
+      message:
+        "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
+    },
     {
       subject: "Your cart is still waiting!",
       message:
@@ -46,7 +51,9 @@ async function sendMailer() {
       const timeDiff = now.getTime() - cartCreated.getTime();
 
       // Send email based on time difference
-      if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
+      if (timeDiff >= 60 * 1000 && timeDiff < 30 * 60 * 1000) {
+        await sendEmail(0, cart);
+      } else if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
         await sendEmail(0, cart);
       } else if (
         timeDiff >= 24 * 60 * 60 * 1000 &&
