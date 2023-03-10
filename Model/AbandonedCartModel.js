@@ -18,6 +18,10 @@ const abobandonedCartModel = mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    others: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

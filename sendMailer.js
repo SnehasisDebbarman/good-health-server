@@ -17,22 +17,22 @@ async function sendMailer() {
   // Define email templates for each day
   const emailTemplates = [
     {
-      subject: "Your cart is still waiting!",
+      subject: "Your cart is still waiting! you left it 1 minutes ago",
       message:
         "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
     },
     {
-      subject: "Your cart is still waiting!",
+      subject: "Your cart is still waiting! you left it 30 minutes ago",
       message:
         "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
     },
     {
-      subject: "Don't forget about your cart!",
+      subject: "Don't forget about your cart! you left it 1 day ago",
       message:
         "Hi {username},\n\nYour cart is still waiting for you! Take a look at the items you left behind and complete your purchase.",
     },
     {
-      subject: "Last chance to complete your purchase!",
+      subject: "Last chance to complete your purchase! you left it 3 days ago",
       message:
         "Hi {username},\n\nThis is your final reminder to complete your purchase. Your cart will expire soon, so act fast!",
     },
@@ -40,8 +40,6 @@ async function sendMailer() {
 
   // Schedule function to run every minute
   cron.schedule("* * * * *", async () => {
-    // const AbandonedCart = mongoose.model("AbandonedCart", abobandonedCartModel);
-
     const abandonedCarts = await AbandonedCart.find({ abandonedStatus: true });
 
     abandonedCarts.forEach(async (cart) => {
@@ -53,15 +51,16 @@ async function sendMailer() {
       // Send email based on time difference
       if (timeDiff >= 60 * 1000 && timeDiff < 30 * 60 * 1000) {
         await sendEmail(0, cart);
-      } else if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
-        await sendEmail(0, cart);
+      }
+      if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
+        await sendEmail(1, cart);
       } else if (
         timeDiff >= 24 * 60 * 60 * 1000 &&
         timeDiff < 72 * 60 * 60 * 1000
       ) {
-        await sendEmail(1, cart);
-      } else if (timeDiff >= 72 * 60 * 60 * 1000) {
         await sendEmail(2, cart);
+      } else if (timeDiff >= 72 * 60 * 60 * 1000) {
+        await sendEmail(3, cart);
         // Set abandonedStatus to false after sending final email
         cart.abandonedStatus = false;
         await cart.save();
