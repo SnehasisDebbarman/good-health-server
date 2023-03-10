@@ -9,6 +9,7 @@ async function addAbandonedCart(req, res) {
     email: req.body.email,
     phone: req.body.phone,
     abandonedStatus: true,
+    url: req.body.url,
     others: req.body.others,
   });
 
