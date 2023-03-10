@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const abobandonedCartModel = mongoose.Schema(
+const sentMessageModal = mongoose.Schema(
   {
     username: {
       type: String,
@@ -18,11 +18,11 @@ const abobandonedCartModel = mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    url: {
+    sendMessage: {
       type: String,
       required: true,
     },
-    others: {
+    url: {
       type: String,
       required: true,
     },
@@ -30,4 +30,4 @@ const abobandonedCartModel = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("abobandonedCart", abobandonedCartModel);
+module.exports = mongoose.model("sentMessageModal", sentMessageModal);

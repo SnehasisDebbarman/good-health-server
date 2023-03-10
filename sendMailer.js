@@ -2,6 +2,7 @@ const cron = require("node-cron");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 const AbandonedCart = require("./Model/AbandonedCartModel");
+const sendMessage = require("./Model/sentMessageModel");
 
 async function sendMailer() {
   // Set up email transporter
@@ -48,28 +49,43 @@ async function sendMailer() {
       const cartCreated = cart.createdAt;
       const timeDiff = now.getTime() - cartCreated.getTime();
 
-      // Send email based on time difference
-      if (timeDiff >= 60 * 1000 && timeDiff < 30 * 60 * 1000) {
-        await sendEmail(0, cart);
-      }
-      if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
+      if (timeDiff < 2 * 60 * 1000) {
         await sendEmail(1, cart);
-      } else if (
-        timeDiff >= 24 * 60 * 60 * 1000 &&
-        timeDiff < 72 * 60 * 60 * 1000
-      ) {
-        await sendEmail(2, cart);
-      } else if (timeDiff >= 72 * 60 * 60 * 1000) {
-        await sendEmail(3, cart);
-        // Set abandonedStatus to false after sending final email
         cart.abandonedStatus = false;
         await cart.save();
       }
+
+      // Send email based on time difference
+      // if (timeDiff >= 60 * 1000 && timeDiff < * 60 * 1000) {
+      //   await sendEmail(0, cart);
+      // }
+      // if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
+      //   await sendEmail(1, cart);
+      // } else if (
+      //   timeDiff >= 24 * 60 * 60 * 1000 &&
+      //   timeDiff < 72 * 60 * 60 * 1000
+      // ) {
+      //   await sendEmail(2, cart);
+      // } else if (timeDiff >= 72 * 60 * 60 * 1000) {
+      //   await sendEmail(3, cart);
+      //   // Set abandonedStatus to false after sending final email
+      //   cart.abandonedStatus = false;
+      //   await cart.save();
+      // }
     });
   });
 
   async function sendEmail(templateIndex, cart) {
     const emailTemplate = emailTemplates[templateIndex];
+
+    const sentMsg = new sendMessage({
+      username: cart.username,
+      email: cart.email,
+      phone: cart.phone,
+      abandonedStatus: cart.status,
+      sendMessage: emailTemplate.subject,
+      url: cart.url,
+    });
 
     const mailOptions = {
       from: "your-email@gmail.com",
@@ -80,6 +96,7 @@ async function sendMailer() {
 
     try {
       await transporter.sendMail(mailOptions);
+      sentMsg.save();
       console.log(`Email sent to ${cart.email}`);
     } catch (error) {
       console.error(error);

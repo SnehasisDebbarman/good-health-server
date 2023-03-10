@@ -9,7 +9,7 @@ async function addAbandonedCart(req, res) {
     email: req.body.email,
     phone: req.body.phone,
     abandonedStatus: true,
-    others: req.body.others ? req.body.others : "",
+    others: req.body.others,
   });
 
   // Save the post to the database
