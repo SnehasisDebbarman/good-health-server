@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 const AbandonedCart = require("./Model/AbandonedCartModel");
 const sendMessageModel = require("./Model/sentMessageModel");
+const moment = require("moment");
 
 async function sendMailer() {
   let transporter = nodemailer.createTransport({
@@ -40,21 +41,35 @@ async function sendMailer() {
   cron.schedule("* * * * *", async () => {
     const abandonedCarts = await AbandonedCart.find({ abandonedStatus: true });
 
+    // console.log("cart.createdAt", moment().format("dd/MM/yyyy, hh:mm a"));
+    // console.log("cart.createdAt", moment(c.createdAt).format());
     abandonedCarts.forEach(async (cart) => {
       const now = new Date();
       const cartCreated = cart.createdAt;
       const timeDiff = now.getTime() - cartCreated.getTime();
+      const duration = moment.duration(moment().diff(moment(cartCreated)));
+      console.log("duration", duration.asMilliseconds());
+      const timeDiffMinutes = duration.asMinutes();
+      console.log("timeDiffMinutes", timeDiffMinutes);
 
       try {
-        if (cart.count === 0 && timeDiff < 5 * 60 * 1000) {
+        if (cart.count === 0 && timeDiffMinutes > 5 && timeDiffMinutes < 9) {
           cart.count = 1;
           await cart.save();
           await sendEmail(0, cart, cart.count);
-        } else if (cart.count === 1 && timeDiff < 10 * 60 * 1000) {
+        } else if (
+          cart.count === 1 &&
+          timeDiffMinutes >= 10 &&
+          timeDiffMinutes < 13
+        ) {
           cart.count = 2;
           await cart.save();
           await sendEmail(1, cart, cart.count);
-        } else if (cart.count === 2 && timeDiff < 15 * 60 * 1000) {
+        } else if (
+          cart.count === 2 &&
+          timeDiffMinutes >= 15 &&
+          timeDiffMinutes < 19
+        ) {
           cart.abandonedStatus = false;
           cart.count = 3;
           await cart.save();
@@ -63,24 +78,6 @@ async function sendMailer() {
       } catch (error) {
         console.log(error);
       }
-
-      // Send email based on time difference
-      // if (timeDiff >= 60 * 1000 && timeDiff < * 60 * 1000) {
-      //   await sendEmail(0, cart);
-      // }
-      // if (timeDiff >= 30 * 60 * 1000 && timeDiff < 24 * 60 * 60 * 1000) {
-      //   await sendEmail(1, cart);
-      // } else if (
-      //   timeDiff >= 24 * 60 * 60 * 1000 &&
-      //   timeDiff < 72 * 60 * 60 * 1000
-      // ) {
-      //   await sendEmail(2, cart);
-      // } else if (timeDiff >= 72 * 60 * 60 * 1000) {
-      //   await sendEmail(3, cart);
-      //   // Set abandonedStatus to false after sending final email
-      //   cart.abandonedStatus = false;
-      //   await cart.save();
-      // }
     });
   });
 
