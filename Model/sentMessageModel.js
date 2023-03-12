@@ -30,6 +30,10 @@ const sentMessageModal = mongoose.Schema(
       type: String,
       required: true,
     },
+    count: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );

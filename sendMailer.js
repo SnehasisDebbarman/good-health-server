@@ -47,18 +47,18 @@ async function sendMailer() {
 
       try {
         if (cart.count === 0 && timeDiff < 5 * 60 * 1000) {
-          cart.count += 1;
+          cart.count = 1;
           await cart.save();
-          await sendEmail(0, cart);
+          await sendEmail(0, cart, cart.count);
         } else if (cart.count === 1 && timeDiff < 10 * 60 * 1000) {
-          cart.count += 1;
+          cart.count = 2;
           await cart.save();
-          await sendEmail(1, cart);
+          await sendEmail(1, cart, cart.count);
         } else if (cart.count === 2 && timeDiff < 15 * 60 * 1000) {
           cart.abandonedStatus = false;
-          cart.count += 1;
+          cart.count = 3;
           await cart.save();
-          await sendEmail(2, cart);
+          await sendEmail(2, cart, cart.count);
         }
       } catch (error) {
         console.log(error);
@@ -84,7 +84,7 @@ async function sendMailer() {
     });
   });
 
-  async function sendEmail(templateIndex, cart) {
+  async function sendEmail(templateIndex, cart, count) {
     const emailTemplate = emailTemplates[templateIndex];
 
     const sentMsg = new sendMessageModel({
@@ -95,6 +95,7 @@ async function sendMailer() {
       sendMessage: emailTemplate.subject,
       url: cart.url,
       orderId: cart.orderId,
+      count: count,
     });
 
     const mailOptions = {
