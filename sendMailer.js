@@ -20,17 +20,17 @@ async function sendMailer() {
   // Define email templates for each day
   const emailTemplates = [
     {
-      subject: "Your cart is still waiting! you left it 2 minutes ago",
+      subject: "Your cart is still waiting! you left it 5 minutes ago",
       message:
         "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
     },
     {
-      subject: "Your cart is still waiting! you left it 3 minutes ago",
+      subject: "Your cart is still waiting! you left it 10 minutes ago",
       message:
         "Hi {username},\n\nWe noticed that you left some items in your cart. Come back soon and complete your purchase!",
     },
     {
-      subject: "Don't forget about your cart! you left it 4 minutes ago",
+      subject: "Don't forget about your cart! you left it 15 minutes ago",
       message:
         "Hi {username},\n\nYour cart is still waiting for you! Take a look at the items you left behind and complete your purchase.",
     },
@@ -46,15 +46,15 @@ async function sendMailer() {
       const timeDiff = now.getTime() - cartCreated.getTime();
 
       try {
-        if (cart.count === 0 && timeDiff < 2 * 60 * 1000) {
+        if (cart.count === 0 && timeDiff < 5 * 60 * 1000) {
           cart.count += 1;
           await cart.save();
           await sendEmail(0, cart);
-        } else if (cart.count === 1 && timeDiff < 3 * 60 * 1000) {
+        } else if (cart.count === 1 && timeDiff < 10 * 60 * 1000) {
           cart.count += 1;
           await cart.save();
           await sendEmail(1, cart);
-        } else if (cart.count === 2 && timeDiff < 4 * 60 * 1000) {
+        } else if (cart.count === 2 && timeDiff < 15 * 60 * 1000) {
           cart.abandonedStatus = false;
           cart.count += 1;
           await cart.save();
